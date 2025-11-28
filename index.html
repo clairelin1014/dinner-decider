@@ -3,213 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>晚餐吃什麼？(豪華版)</title>
+    <title>豪華晚餐輪盤</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            color: white;
         }
         .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 90%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 3rem 2rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 85%;
             max-width: 400px;
             text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         h1 {
-            color: #333;
-            margin-bottom: 0.5rem;
-            font-size: 1.5rem;
+            color: #fff;
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 2px;
         }
         .subtitle {
-            color: #888;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
+            color: #bbb;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: inline-block;
+            padding-bottom: 5px;
         }
         .result-box {
-            height: 80px;
+            min-height: 120px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.8rem; /* 字體稍微縮小以容納長店名 */
-            font-weight: bold;
-            color: #d4af37; /* 改為金色質感 */
-            margin: 20px 0;
-            border: 2px dashed #ddd;
-            border-radius: 10px;
-            background-color: #fafafa;
-            padding: 0 10px;
-        }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #d4af37; /* 金色 */
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            margin-bottom: 3rem;
         }
         button {
             cursor: pointer;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-        .btn-add {
-            background-color: #4ecdc4;
-            color: white;
-        }
-        .btn-decide {
-            background-color: #333; /* 改為深色系代表高級感 */
-            color: #d4af37; /* 金色文字 */
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #d4af37, #f1c40f);
+            color: #1a1a1a;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
             width: 100%;
-            padding: 15px;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        .btn-decide:active {
-            transform: scale(0.98);
+        button:active {
+            transform: scale(0.95);
         }
-        .food-list {
-            text-align: left;
-            margin-bottom: 20px;
-            max-height: 150px;
-            overflow-y: auto;
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
         }
-        .tag {
-            display: inline-block;
-            background: #eee;
-            padding: 5px 10px;
-            border-radius: 15px;
-            margin: 2px;
-            font-size: 0.9rem;
-        }
-        .tag span {
-            margin-left: 5px;
-            color: #999;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .tag span:hover {
-            color: #ff6b6b;
+        .footer {
+            margin-top: 30px;
+            font-size: 0.7rem;
+            color: #666;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>✨ 今晚吃什麼？</h1>
-    <div class="subtitle">Budget: NT$800+ / 人</div>
+    <h1>DINNER DECIDER</h1>
+    <div class="subtitle">Premium Selection ($800+)</div>
     
-    <div class="result-box" id="resultDisplay">???</div>
+    <div class="result-box" id="resultDisplay">Ready?</div>
 
-    <button class="btn-decide" onclick="pickFood()">幫我決定 (豪華版)</button>
-
-    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-
-    <div class="input-group">
-        <input type="text" id="foodInput" placeholder="輸入其他餐廳" onkeypress="handleEnter(event)">
-        <button class="btn-add" onclick="addFood()">加入</button>
-    </div>
-
-    <div class="food-list" id="foodListDisplay">
-    </div>
+    <button class="btn-decide" onclick="pickFood()">START</button>
+    
+    <div class="footer">Tap to decide your destiny</div>
 </div>
 
 <script>
-    // 預設清單 (人均 800元 以上)
-    let foods = [
-        // --- 🏆 頂級自助餐 Buffet (1500-2500) ---
+    // 餐廳清單 (妳只要在 GitHub 修改這裡即可)
+    const foods = [
+        // --- 自助餐 ---
         '旭集 和食集錦', '饗饗 INPARADISE', '晶華柏麗廳', 
         '美福 Palette 彩匯', 'NAGOMI 和食饗宴', '台北君悅凱菲屋',
         '文華東方 Café',
+        
+        // --- 火鍋 ---
+        '橘色涮涮屋', '合·shabu', '但馬家涮涮鍋', 
+        '二本松涮涮屋', '麻辣45', '青花驕', 
+        '這一鍋', '無老鍋',
 
-        // --- 🔥 奢華鍋物 (1000-3000) ---
-        '橘色涮涮屋 (火鍋界LV)', '合·shabu', '但馬家涮涮鍋', 
-        '二本松涮涮屋', '麻辣45 (高樓景觀)', '青花驕 (狂點肉)', 
-        '這一鍋 (皇室秘藏)', '無老鍋 (單點)',
+        // --- 燒肉 ---
+        '老乾杯', '胡同燒肉', '燒肉中山', '梵燒肉', 
+        '大腕燒肉', '八和和牛燒肉', 'MOE 燃', '樂軒和牛',
 
-        // --- 🥩 精緻燒肉 (1500-3000) ---
-        '老乾杯', '胡同燒肉', '燒肉中山 (高樓景觀)', '梵燒肉', 
-        '大腕燒肉 (米其林)', '八和和牛燒肉專門店', 'MOE 燃', 
-        '樂軒和牛專門店',
-
-        // --- 🍴 牛排與鐵板燒 (1500-3000+) ---
+        // --- 牛排/鐵板燒 ---
         '教父牛排 Danny\'s', 'Smith & Wollensky', '茹絲葵 Ruth\'s Chris', 
-        '莫爾頓牛排館', '初魚鐵板燒 (無菜單)', '夏慕尼', 
+        '莫爾頓牛排館', '初魚鐵板燒', '夏慕尼', 
         '王品牛排', 'Robin\'s 牛排屋', 'A Cut 牛排館',
 
-        // --- 🍣 日式無菜單/壽司 (1500-3000) ---
-        '初魚鮨', '瞞著爹 (無菜單)', '三井料理美術館', 
+        // --- 日料/壽司 ---
+        '初魚鮨', '瞞著爹', '三井料理美術館', 
         '吉兆割烹壽司', '野村壽司',
 
-        // --- 🍷 餐酒館與異國 (800-1500+) ---
-        'Texas Roadhouse', 'GUMGUM (點滿)', 'WILDWOOD 原木燒烤', 
-        'Beape (法式)', 'Longtail (米其林)', 'Chou Chou',
-        'ABV Bar & Kitchen (含酒)'
+        // --- 餐酒館 ---
+        'Texas Roadhouse', 'GUMGUM', 'WILDWOOD 原木燒烤', 
+        'Beape', 'Longtail', 'Chou Chou', 'ABV Bar & Kitchen'
     ];
 
     let timer = null;
 
-    function renderList() {
-        const listContainer = document.getElementById('foodListDisplay');
-        listContainer.innerHTML = '';
-        foods.forEach((food, index) => {
-            const tag = document.createElement('div');
-            tag.className = 'tag';
-            tag.innerHTML = `${food} <span onclick="removeFood(${index})">×</span>`;
-            listContainer.appendChild(tag);
-        });
-    }
-
-    function addFood() {
-        const input = document.getElementById('foodInput');
-        const value = input.value.trim();
-        if (value) {
-            foods.push(value);
-            input.value = '';
-            renderList();
-        }
-    }
-
-    function removeFood(index) {
-        foods.splice(index, 1);
-        renderList();
-    }
-
-    function handleEnter(e) {
-        if (e.key === 'Enter') addFood();
-    }
-
     function pickFood() {
-        if (foods.length === 0) {
-            alert("請先加入一些餐廳！");
-            return;
-        }
-
         const display = document.getElementById('resultDisplay');
         const btn = document.querySelector('.btn-decide');
         
         if(timer) return;
 
         let counter = 0;
-        const maxRounds = 20;
+        const maxRounds = 25; // 轉多圈一點增加緊張感
 
         btn.disabled = true;
-        btn.style.opacity = 0.7;
-        btn.innerText = "精選中...";
+        btn.innerText = "CHOOSING...";
 
         timer = setInterval(() => {
             const randomIndex = Math.floor(Math.random() * foods.length);
@@ -220,20 +148,17 @@
                 clearInterval(timer);
                 timer = null;
                 btn.disabled = false;
-                btn.style.opacity = 1;
-                btn.innerText = "再選一次";
+                btn.innerText = "SPIN AGAIN";
                 
                 const finalIndex = Math.floor(Math.random() * foods.length);
                 display.innerText = foods[finalIndex];
                 
+                // 簡單的特效
                 display.style.transform = "scale(1.1)";
-                display.style.color = "#d4af37"; // 確保結果是金色
                 setTimeout(() => display.style.transform = "scale(1)", 200);
             }
-        }, 50);
+        }, 60);
     }
-
-    renderList();
 </script>
 
 </body>
