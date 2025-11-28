@@ -3,142 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>晚餐小幫手</title>
+    <title>老公的豪華晚餐</title>
     <style>
-        /* 俏皮可愛的字體與背景 */
+        /* --- 黑金奢華風格設定 --- */
         body {
-            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
-            background: linear-gradient(120deg, #f6d365 0%, #fda085 100%); /* 溫暖的蜜桃漸層 */
+            font-family: 'Helvetica Neue', Arial, 'Microsoft JhengHei', sans-serif;
+            /* 深邃黑金背景 */
+            background: radial-gradient(circle at center, #2b2b2b 0%, #000000 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            color: #555;
+            color: #e0e0e0; /* 淺灰白色文字，對比度高 */
         }
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 2.5rem 2rem;
-            border-radius: 30px; /* 圓角大一點比較可愛 */
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            /* 深色毛玻璃效果 */
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 3rem 2rem;
+            border-radius: 30px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7);
             width: 85%;
-            max-width: 380px;
+            max-width: 400px;
             text-align: center;
-            border: 4px solid #fff;
+            /* 細緻的金色邊框 */
+            border: 1px solid rgba(212, 175, 55, 0.3);
         }
         h1 {
-            color: #ff6b81; /* 俏皮粉紅 */
-            margin: 0 0 10px 0;
-            font-size: 1.6rem;
-            font-weight: bold;
-            line-height: 1.4;
+            /* 金色漸層標題 */
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0 0 15px 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
         .subtitle {
-            color: #888;
+            color: #999;
             font-size: 0.9rem;
-            background-color: #eee;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2.5rem;
             display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 8px;
         }
-        .result-box {
-            min-height: 120px;
+        .result-box-container {
+            /* 用於包裹內容以實現模糊效果 */
+            height: 140px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #ff4757;
-            margin-bottom: 2rem;
-            border: 3px dashed #ffd1d1; /* 虛線邊框 */
+            margin-bottom: 2.5rem;
+            border: 2px solid rgba(212, 175, 55, 0.5);
             border-radius: 20px;
-            background-color: #fff0f3;
-            padding: 10px;
-            transition: transform 0.2s;
+            background: rgba(0,0,0,0.3);
+            overflow: hidden; /* 隱藏溢出 */
+            position: relative;
         }
+        .result-content {
+            font-size: 2rem;
+            font-weight: bold;
+            /* 亮金色文字 */
+            color: #f1c40f;
+            text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+            transition: all 0.1s ease-out;
+            width: 100%;
+            position: absolute;
+            /* 初始狀態清晰 */
+            filter: blur(0px);
+            transform: scale(1);
+        }
+        /* --- 關鍵動畫：殘影模糊效果 --- */
+        .result-content.blur-effect {
+            /* 高速轉動時增加模糊和稍微放大，製造殘影感 */
+            filter: blur(6px);
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
         button {
             cursor: pointer;
             border: none;
-            padding: 18px 0;
+            padding: 20px 0;
             border-radius: 50px;
             font-weight: bold;
             font-size: 1.2rem;
             width: 100%;
-            background-color: #ff6b81;
-            color: white;
-            box-shadow: 0 6px 0 #e05266; /* 立體按鈕效果 */
-            transition: all 0.1s;
+            /* 奢華金箔漸層按鈕 */
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7);
+            background-size: 200% auto;
+            color: #222; /* 深色文字對比金色背景 */
+            box-shadow: 0 10px 25px rgba(191, 149, 63, 0.4);
+            transition: all 0.3s ease;
             position: relative;
             top: 0;
         }
+        button:hover {
+            background-position: right center; /* hover時金光流動效果 */
+        }
         button:active {
-            box-shadow: 0 2px 0 #e05266;
-            top: 4px; /* 按下去的感覺 */
+            transform: scale(0.98);
+            box-shadow: 0 5px 15px rgba(191, 149, 63, 0.3);
+            top: 2px;
         }
         button:disabled {
-            background-color: #ffb7c5;
-            box-shadow: none;
+            opacity: 0.7;
             cursor: not-allowed;
-            top: 0;
+            background: #555;
+            color: #888;
+            box-shadow: none;
         }
         .footer {
-            margin-top: 25px;
-            font-size: 0.8rem;
-            color: #aaa;
+            margin-top: 35px;
+            font-size: 0.9rem;
+            color: #b38728; /* 暗金色 */
+            font-style: italic;
         }
-        /* 愛心跳動動畫 */
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        .heart {
-            display: inline-block;
-            animation: heartbeat 1.5s infinite;
+        .kiss-emoji {
+            font-style: normal;
+            margin-left: 5px;
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>老公，<br>我們今晚吃什麼？<span class="heart">❤️</span></h1>
-    <div class="subtitle">💰 預算 800+ 豪華大餐</div>
+    <h1>老公，今晚吃什麼？</h1>
+    <div class="subtitle">Premium Selection</div>
     
-    <div class="result-box" id="resultDisplay">點擊下面按鈕<br>幫我選！👇</div>
+    <div class="result-box-container">
+        <div class="result-content" id="resultDisplay">準備好了嗎？</div>
+    </div>
 
-    <button class="btn-decide" onclick="pickFood()">幫我們決定 🎲</button>
+    <button class="btn-decide" onclick="pickFood()">啟動晚餐輪盤 ⚜️</button>
     
-    <div class="footer">老婆特製專屬 App 😘</div>
+    <div class="footer">老婆用心特製 APP <span class="kiss-emoji">💋</span></div>
 </div>
 
 <script>
-    // 妳可以在這裡修改餐廳清單
+    // 餐廳清單 (維持不變)
     const foods = [
-        // --- 自助餐 ---
         '旭集 和食集錦', '饗饗 INPARADISE', '晶華柏麗廳', 
         '美福 Palette 彩匯', 'NAGOMI 和食饗宴', '台北君悅凱菲屋',
         '文華東方 Café',
-        
-        // --- 火鍋 ---
         '橘色涮涮屋', '合·shabu', '但馬家涮涮鍋', 
-        '二本松涮涮屋', '麻辣45', '青花驕', 
-        '這一鍋', '無老鍋',
-
-        // --- 燒肉 ---
+        '二本松涮涮屋', '麻辣45', '青花驕', '這一鍋', '無老鍋',
         '老乾杯', '胡同燒肉', '燒肉中山', '梵燒肉', 
         '大腕燒肉', '八和和牛燒肉', 'MOE 燃', '樂軒和牛',
-
-        // --- 牛排/鐵板燒 ---
         '教父牛排 Danny\'s', 'Smith & Wollensky', '茹絲葵 Ruth\'s Chris', 
-        '莫爾頓牛排館', '初魚鐵板燒', '夏慕尼', 
-        '王品牛排', 'Robin\'s 牛排屋', 'A Cut 牛排館',
-
-        // --- 日料/壽司 ---
-        '初魚鮨', '瞞著爹', '三井料理美術館', 
-        '吉兆割烹壽司', '野村壽司',
-
-        // --- 餐酒館 ---
+        '莫爾頓牛排館', '初魚鐵板燒', '夏慕尼', '王品牛排', 'A Cut',
+        '初魚鮨', '瞞著爹', '三井料理美術館', '吉兆割烹壽司', '野村壽司',
         'Texas Roadhouse', 'GUMGUM', 'WILDWOOD 原木燒烤', 
         'Beape', 'Longtail', 'Chou Chou', 'ABV Bar & Kitchen'
     ];
@@ -146,36 +165,48 @@
     let timer = null;
 
     function pickFood() {
-        const display = document.getElementById('resultDisplay');
+        const displayContent = document.getElementById('resultDisplay');
         const btn = document.querySelector('.btn-decide');
         
         if(timer) return;
 
         let counter = 0;
-        const maxRounds = 25; 
+        const maxRounds = 30; // 轉多圈一點，讓殘影效果更明顯
 
         btn.disabled = true;
-        btn.innerText = "抽獎中...🫣"; // 俏皮的狀態文字
+        btn.innerText = "正在為您精選...";
 
+        // --- 開始動畫：加入模糊殘影效果 ---
+        displayContent.classList.add('blur-effect');
+
+        // 加快轉動速度 (40ms) 增強速度感
         timer = setInterval(() => {
             const randomIndex = Math.floor(Math.random() * foods.length);
-            display.innerText = foods[randomIndex];
+            displayContent.innerText = foods[randomIndex];
             counter++;
 
             if (counter > maxRounds) {
                 clearInterval(timer);
                 timer = null;
+                
+                // --- 結束動畫：移除模糊，瞬間變清晰 ---
+                displayContent.classList.remove('blur-effect');
+                
                 btn.disabled = false;
-                btn.innerText = "不滿意？再選一次 🔄";
+                btn.innerText = "不滿意？再轉一次 🔄";
                 
                 const finalIndex = Math.floor(Math.random() * foods.length);
-                display.innerHTML = `就吃這家！<br>✨ ${foods[finalIndex]} ✨`;
+                displayContent.innerHTML = `今晚就吃...<br>✨ ${foods[finalIndex]} ✨`;
                 
-                // 放大特效
-                display.style.transform = "scale(1.1)";
-                setTimeout(() => display.style.transform = "scale(1)", 200);
+                // 最後的放大強調特效
+                displayContent.style.transform = "scale(1.2)";
+                displayContent.style.textShadow = "0 0 20px rgba(241, 196, 15, 0.8)";
+                setTimeout(() => {
+                    displayContent.style.transform = "scale(1)";
+                    displayContent.style.textShadow = "0 0 10px rgba(241, 196, 15, 0.5)";
+                }, 300);
             }
-        }, 60);
+        }, 40);
     }
 </script>
 
