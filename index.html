@@ -60,4 +60,124 @@
         button {
             cursor: pointer;
             border: none;
-            padding: 18
+            padding: 18px 0;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            width: 100%;
+            background-color: #ff6b81;
+            color: white;
+            box-shadow: 0 6px 0 #e05266; /* 立體按鈕效果 */
+            transition: all 0.1s;
+            position: relative;
+            top: 0;
+        }
+        button:active {
+            box-shadow: 0 2px 0 #e05266;
+            top: 4px; /* 按下去的感覺 */
+        }
+        button:disabled {
+            background-color: #ffb7c5;
+            box-shadow: none;
+            cursor: not-allowed;
+            top: 0;
+        }
+        .footer {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        /* 愛心跳動動畫 */
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .heart {
+            display: inline-block;
+            animation: heartbeat 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>老公，<br>我們今晚吃什麼？<span class="heart">❤️</span></h1>
+    <div class="subtitle">💰 預算 800+ 豪華大餐</div>
+    
+    <div class="result-box" id="resultDisplay">點擊下面按鈕<br>幫我選！👇</div>
+
+    <button class="btn-decide" onclick="pickFood()">幫我們決定 🎲</button>
+    
+    <div class="footer">老婆特製專屬 App 😘</div>
+</div>
+
+<script>
+    // 妳可以在這裡修改餐廳清單
+    const foods = [
+        // --- 自助餐 ---
+        '旭集 和食集錦', '饗饗 INPARADISE', '晶華柏麗廳', 
+        '美福 Palette 彩匯', 'NAGOMI 和食饗宴', '台北君悅凱菲屋',
+        '文華東方 Café',
+        
+        // --- 火鍋 ---
+        '橘色涮涮屋', '合·shabu', '但馬家涮涮鍋', 
+        '二本松涮涮屋', '麻辣45', '青花驕', 
+        '這一鍋', '無老鍋',
+
+        // --- 燒肉 ---
+        '老乾杯', '胡同燒肉', '燒肉中山', '梵燒肉', 
+        '大腕燒肉', '八和和牛燒肉', 'MOE 燃', '樂軒和牛',
+
+        // --- 牛排/鐵板燒 ---
+        '教父牛排 Danny\'s', 'Smith & Wollensky', '茹絲葵 Ruth\'s Chris', 
+        '莫爾頓牛排館', '初魚鐵板燒', '夏慕尼', 
+        '王品牛排', 'Robin\'s 牛排屋', 'A Cut 牛排館',
+
+        // --- 日料/壽司 ---
+        '初魚鮨', '瞞著爹', '三井料理美術館', 
+        '吉兆割烹壽司', '野村壽司',
+
+        // --- 餐酒館 ---
+        'Texas Roadhouse', 'GUMGUM', 'WILDWOOD 原木燒烤', 
+        'Beape', 'Longtail', 'Chou Chou', 'ABV Bar & Kitchen'
+    ];
+
+    let timer = null;
+
+    function pickFood() {
+        const display = document.getElementById('resultDisplay');
+        const btn = document.querySelector('.btn-decide');
+        
+        if(timer) return;
+
+        let counter = 0;
+        const maxRounds = 25; 
+
+        btn.disabled = true;
+        btn.innerText = "抽獎中...🫣"; // 俏皮的狀態文字
+
+        timer = setInterval(() => {
+            const randomIndex = Math.floor(Math.random() * foods.length);
+            display.innerText = foods[randomIndex];
+            counter++;
+
+            if (counter > maxRounds) {
+                clearInterval(timer);
+                timer = null;
+                btn.disabled = false;
+                btn.innerText = "不滿意？再選一次 🔄";
+                
+                const finalIndex = Math.floor(Math.random() * foods.length);
+                display.innerHTML = `就吃這家！<br>✨ ${foods[finalIndex]} ✨`;
+                
+                // 放大特效
+                display.style.transform = "scale(1.1)";
+                setTimeout(() => display.style.transform = "scale(1)", 200);
+            }
+        }, 60);
+    }
+</script>
+
+</body>
+</html>
