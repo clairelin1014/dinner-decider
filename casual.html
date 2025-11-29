@@ -9,10 +9,9 @@
         /* --- 中價位美學：溫暖、乾淨、Cafe風 --- */
         body {
             font-family: 'Varela Round', 'Noto Sans TC', sans-serif;
-            /* 溫暖的米色/燕麥色背景 */
             background-color: #fdfbf7;
             background-image: radial-gradient(#e0d6cc 1px, transparent 1px);
-            background-size: 20px 20px; /* 點點背景，增加文青感 */
+            background-size: 20px 20px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -21,11 +20,9 @@
             color: #4a4a4a;
         }
         .container {
-            /* 乾淨的白色卡片 */
             background: #ffffff;
             padding: 2.5rem 2rem;
             border-radius: 24px;
-            /* 柔和的陰影，不像黑金版那麼重 */
             box-shadow: 0 10px 40px rgba(198, 180, 160, 0.4);
             width: 85%;
             max-width: 380px;
@@ -33,7 +30,7 @@
             border: 1px solid #eee;
         }
         h1 {
-            color: #d35400; /* 焦糖橘色，促進食慾 */
+            color: #d35400;
             margin: 0 0 10px 0;
             font-size: 1.6rem;
             font-weight: 700;
@@ -55,7 +52,6 @@
             justify-content: center;
             align-items: center;
             margin-bottom: 2.5rem;
-            /* 像便條紙或菜單的框框 */
             border: 3px dashed #ebd4b5;
             border-radius: 16px;
             background: #fffdf9;
@@ -65,19 +61,16 @@
         .result-content {
             font-size: 1.8rem;
             font-weight: bold;
-            color: #5d4037; /* 深咖啡色文字 */
+            color: #5d4037;
             width: 100%;
             position: absolute;
             transition: all 0.1s;
         }
-        
-        /* 動畫：殘影效果 (保留好用的功能) */
         .blur-effect {
             filter: blur(4px);
             transform: scale(1.1);
             opacity: 0.6;
         }
-
         button {
             cursor: pointer;
             border: none;
@@ -86,7 +79,6 @@
             font-weight: bold;
             font-size: 1.1rem;
             width: 100%;
-            /* 溫暖的橘紅漸層，像好吃的義大利麵醬汁或楓葉 */
             background: linear-gradient(135deg, #ff9f43 0%, #ff6b6b 100%);
             color: white;
             box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
@@ -136,9 +128,16 @@
 </div>
 
 <script>
-    // --- 中價位/質感連鎖/異國料理清單 ---
     const foods = [
-        // --- 必吃名店/中式 ---
+        // --- 質感Cafe/早午餐 (新加入) ---
+        'nook', 'eslite cafe', 'WIRED CHAYA', 
+        '武藏野森珈琲Diner', 'Amber Cafe', '日翼 Coffee Bar',
+        '貳樓 Second Floor', 'Toasteria Cafe', 'Miacucina', 
+        '樂子 the Diner', 'Campus Cafe', 'Engolili 英格莉莉',
+
+        // --- 質感台式/中式 (新加入) ---
+        '永心鳳茶', '真珠台菜', '犁園湯包館', '輪輪1976', 
+        '天仁喫茶趣', '碧海廚房',
         '鼎泰豐', '點點心', '添好運', '春水堂', 
         '欣葉台菜', '開飯川食堂', '時時香',
 
@@ -151,20 +150,16 @@
         '一蘭拉麵', '屯京拉麵', '一風堂', '鬼金棒', 
         '丸龜製麵 (加點炸物)', '鳥人拉麵', '麵屋一燈', '五之神製作所',
 
-        // --- 火鍋 (質感中價位) ---
+        // --- 火鍋 ---
         '這一小鍋', '石二鍋 (升級版)', '涮乃葉', 
         '和牛涮', '聚 日式鍋物', '雞湯大叔', 
         '肉多多火鍋', '萬客什鍋', '詹記麻辣火鍋', '青花驕',
 
         // --- 異國/泰韓 ---
+        '金色三麥', 'TGI Fridays', 'GB 鮮釀餐廳',
         '瓦城泰國料理', '非常泰', 'NARA Thai', 
         '涓豆腐', '豆腐村', '兩餐', 
-        'SAIKABO 韓國料理', 'bb.q Chicken', '韓姜熙的小廚房',
-
-        // --- 西式/早午餐 ---
-        '貳樓 Second Floor', 'Toasteria Cafe', 'Miacucina', 
-        '金色三麥', 'TGI Fridays', 'GB 鮮釀餐廳', 
-        '樂子 the Diner', 'Campus Cafe', 'Engolili 英格莉莉'
+        'SAIKABO 韓國料理', 'bb.q Chicken'
     ];
 
     let timer = null;
@@ -174,13 +169,11 @@
         const btn = document.querySelector('.btn-decide');
         
         if(timer) return;
-
         let counter = 0;
         const maxRounds = 30;
 
         btn.disabled = true;
         btn.innerText = "精選餐廳中...";
-
         displayContent.classList.add('blur-effect');
 
         timer = setInterval(() => {
@@ -191,22 +184,18 @@
             if (counter > maxRounds) {
                 clearInterval(timer);
                 timer = null;
-                
                 displayContent.classList.remove('blur-effect');
-                
                 btn.disabled = false;
                 btn.innerText = "換一家 🔄";
                 
                 const finalIndex = Math.floor(Math.random() * foods.length);
                 displayContent.innerHTML = `今晚就吃...<br>✨ ${foods[finalIndex]} ✨`;
                 
-                // 活潑的彈跳特效
                 displayContent.style.transform = "scale(1.2)";
                 setTimeout(() => displayContent.style.transform = "scale(1)", 250);
             }
         }, 40);
     }
 </script>
-
 </body>
 </html>
