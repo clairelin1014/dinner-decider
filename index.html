@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今晚吃哪個等級？</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            /* 神秘的深紫色背景 */
+            background: linear-gradient(135deg, #2c0e37 0%, #000000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem 2rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 85%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        h1 {
+            margin: 0 0 5px 0;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #e0c3fc, #8ec5fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 2rem;
+        }
+
+        /* --- 中央大輪盤顯示區 --- */
+        .roulette-display {
+            height: 120px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            border: 2px solid #a29bfe;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 20px rgba(162, 155, 254, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tier-text {
+            width: 100%;
+            position: absolute;
+            transition: all 0.1s;
+        }
+
+        .btn-spin {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4);
+            transition: transform 0.2s;
+            margin-bottom: 3rem;
+        }
+        .btn-spin:active {
+            transform: scale(0.95);
+        }
+        .btn-spin:disabled {
+            opacity: 0.7;
+            cursor: progress;
+        }
+
+        /* --- 分隔線 --- */
+        .divider {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin: 20px 0;
+            position: relative;
+        }
+        .divider span {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a0b2e; /* 配合背景色 */
+            padding: 0 10px;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        /* --- 手動選擇按鈕區 --- */
+        .manual-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn-direct {
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: left;
+            padding-left: 20px;
+            position: relative;
+            transition: transform 0.2s;
+            text-decoration: none; /* 移除連結下底線 */
+            display: block; /* 讓 a 標籤滿版 */
+        }
+        .btn-direct:active {
+            transform: scale(0.98);
+        }
+        .btn-direct::after {
+            content: '➜';
+            position: absolute;
+            right: 20px;
+            opacity: 0.5;
+        }
+
+        /* 為三個選項設計不同的風格 */
+        
+        /* 1. 奢華版 (黑金) */
+        .opt-luxury {
+            background: linear-gradient(to right, #111, #333);
+            color: #d4af37;
+            border: 1px solid #d4af37;
+        }
+        
+        /* 2. 質感版 (米色) */
+        .opt-casual {
+            background: linear-gradient(to right, #fffbf0, #f0e6d2);
+            color: #8d6e63;
+            border: 1px solid #8d6e63;
+        }
+        
+        /* 3. 銅板版 (黃紅) */
+        .opt-cheap {
+            background: linear-gradient(to right, #ffde03, #ffc107);
+            color: #c0392b;
+            border: 1px solid #c0392b;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.7rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>命運傳送門</h1>
+    <div class="subtitle">今晚的預算是...？</div>
+
+    <div class="roulette-display">
+        <div class="tier-text" id="resultDisplay">?</div>
+    </div>
+
+    <button class="btn-spin" onclick="startRoulette()">聽天由命 🎲</button>
+
+    <div class="divider">
+        <span>或是直接選</span>
+    </div>
+
+    <div class="manual-options">
+        <a href="index.html" class="btn-direct opt-luxury">
+            ✨ 奢華大餐 ($800+)
+        </a>
+        <a href="casual.html" class="btn-direct opt-casual">
+            🍽️ 質感日常 ($400-800)
+        </a>
+        <a href="cheap.html" class="btn-direct opt-cheap">
+            💰 銅板美食 ($200↓)
+        </a>
+    </div>
+
+    <div class="footer">老婆的主控台 ❤️</div>
+</div>
+
+<script>
+    // 定義三個頁面的資訊
+    const tiers = [
+        { name: "✨ 奢華大餐 ✨", url: "index.html", color: "#d4af37" },
+        { name: "🍽️ 質感日常 🍽️", url: "casual.html", color: "#e0e0e0" },
+        { name: "💰 銅板美食 💰", url: "cheap.html", color: "#ffde03" }
+    ];
+
+    let timer = null;
+
+    function startRoulette() {
+        const display = document.getElementById('resultDisplay');
+        const btn = document.querySelector('.btn-spin');
+        
+        if(timer) return; // 防止重複點擊
+
+        let counter = 0;
+        const maxRounds = 20; // 轉幾次停
+
+        btn.disabled = true;
+        btn.innerText = "命運運算中...";
+
+        // 開始輪播動畫
+        timer = setInterval(() => {
+            const randomIndex = Math.floor(Math.random() * tiers.length);
+            const selected = tiers[randomIndex];
+            
+            display.innerText = selected.name;
+            display.style.color = selected.color; // 文字顏色跟著變
+            
+            counter++;
+
+            // 停止條件
+            if (counter > maxRounds) {
+                clearInterval(timer);
+                timer = null;
+                
+                // 決定最終結果
+                const finalIndex = Math.floor(Math.random() * tiers.length);
+                const finalChoice = tiers[finalIndex];
+                
+                display.innerText = finalChoice.name;
+                display.style.color = finalChoice.color;
+                
+                btn.innerText = "傳送中...🚀";
+                
+                // 特效：閃爍一下
+                display.style.transform = "scale(1.2)";
+                
+                // 延遲 0.8 秒後自動跳轉
+                setTimeout(() => {
+                    window.location.href = finalChoice.url;
+                }, 1500);
+            }
+        }, 80); // 輪播速度
+    }
+</script>
+
+</body>
+</html>
