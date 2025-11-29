@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>晚餐吃什麼？(銅板美食-開胃版)</title>
+    <title>晚餐吃什麼？(銅板美食)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;900&display=swap" rel="stylesheet">
     <style>
         /* --- 低價位美學：開胃暖色調、普普風 --- */
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            /* 改為更暖的起司金黃色背景 */
             background-color: #f1c40f;
             background-image: radial-gradient(#d35400 15%, transparent 16%),
                               radial-gradient(#d35400 15%, transparent 16%);
@@ -25,9 +24,8 @@
         .container {
             background: #fff;
             padding: 2.5rem 2rem;
-            border: 4px solid #2c3e50; /* 邊框改深色一點，對比更好看 */
+            border: 4px solid #2c3e50;
             border-radius: 15px;
-            /* 硬邊陰影改為深咖啡色，像烤焦的感覺 */
             box-shadow: 10px 10px 0px #2c3e50;
             width: 85%;
             max-width: 380px;
@@ -42,7 +40,7 @@
             letter-spacing: -1px;
         }
         .subtitle {
-            background-color: #e74c3c; /* 番茄醬紅 */
+            background-color: #e74c3c;
             color: #fff;
             font-size: 1rem;
             padding: 5px 15px;
@@ -61,7 +59,6 @@
             margin-bottom: 2.5rem;
             border: 4px solid #2c3e50;
             border-radius: 10px;
-            /* 【關鍵修改】這裡改成開胃的甜辣醬橘紅色！ */
             background: #ff6b35; 
             overflow: hidden;
             position: relative;
@@ -75,8 +72,6 @@
             position: absolute;
             z-index: 2;
         }
-        
-        /* 背景裝飾線條改暖色 */
         .result-box-container::before {
             content: '';
             position: absolute;
@@ -90,12 +85,10 @@
             );
             z-index: 1;
         }
-
         .blur-effect {
             filter: blur(4px);
             transform: scale(1.1) skew(-5deg);
         }
-
         button {
             cursor: pointer;
             border: 4px solid #2c3e50;
@@ -108,34 +101,26 @@
             color: #2c3e50;
             box-shadow: 6px 6px 0px #2c3e50;
             transition: all 0.1s;
-            position: relative;
-            top: 0;
-            left: 0;
         }
         button:active {
-            top: 4px;
-            left: 4px;
+            top: 4px; left: 4px;
             box-shadow: 2px 2px 0px #2c3e50;
         }
         button:hover {
-            /* 滑鼠移上去變成好吃的橘色 */
             background-color: #ff6b35;
             color: #fff;
         }
         button:disabled {
-            background: #ddd;
-            color: #888;
-            box-shadow: none;
-            top: 6px;
-            left: 6px;
-            cursor: not-allowed;
+            background: #ddd; color: #888;
+            box-shadow: none; cursor: not-allowed;
+            top: 6px; left: 6px;
         }
         .footer {
             margin-top: 30px;
             font-size: 0.9rem;
             font-weight: bold;
             color: #2c3e50;
-            background: #f1c40f; /* 底色也改暖黃 */
+            background: #f1c40f;
             padding: 5px;
             border: 2px solid #2c3e50;
             transform: rotate(-2deg);
@@ -159,8 +144,10 @@
 </div>
 
 <script>
-    // --- 低價位 / 銅板美食清單 ($200以下) ---
     const foods = [
+        // --- 新加入 ---
+        '林記海南雞飯',
+
         // --- 國民便當/飯類 ---
         '鬍鬚張魯肉飯', '悟饕池上飯包', '三商巧福', 
         '梁社漢排骨', 'すき家 (Sukiya)', '吉野家', 
@@ -171,8 +158,8 @@
         '牛肉麵', '巷口乾麵 + 滷味', '炸醬麵', 
         '老饕麵館',
 
-        // --- 速食 (快樂泉源) ---
-        '麥當勞 (麥香雞)', '肯德基', '摩斯漢堡', 
+        // --- 速食 ---
+        '麥當勞', '肯德基', '摩斯漢堡', 
         '必勝客 (個人餐)', '胖老爹', '漢堡王',
 
         // --- 夜市/小吃 ---
@@ -192,13 +179,11 @@
         const btn = document.querySelector('.btn-decide');
         
         if(timer) return;
-
         let counter = 0;
         const maxRounds = 30;
 
         btn.disabled = true;
         btn.innerText = "搜尋便宜好料...";
-
         displayContent.classList.add('blur-effect');
 
         timer = setInterval(() => {
@@ -209,22 +194,18 @@
             if (counter > maxRounds) {
                 clearInterval(timer);
                 timer = null;
-                
                 displayContent.classList.remove('blur-effect');
-                
                 btn.disabled = false;
                 btn.innerText = "不喜歡？再轉！";
                 
                 const finalIndex = Math.floor(Math.random() * foods.length);
                 displayContent.innerHTML = `${foods[finalIndex]}`;
                 
-                // 誇張的放大特效
                 displayContent.style.transform = "scale(1.3) rotate(5deg)";
                 setTimeout(() => displayContent.style.transform = "scale(1) rotate(0deg)", 200);
             }
         }, 30);
     }
 </script>
-
 </body>
 </html>
