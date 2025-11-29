@@ -108,14 +108,19 @@
         }
         .footer {
             margin-top: 35px;
-            font-size: 0.9rem;
+            font-size: 0.95rem; /* 字稍微大一點 */
             color: #b38728;
-            font-style: italic;
+            line-height: 1.6; /* 增加行距，讓兩行字不擁擠 */
         }
         .kiss-emoji {
             font-style: normal;
             margin-left: 5px;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+        }
+        .small-text {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            font-style: italic;
         }
     </style>
 </head>
@@ -131,7 +136,10 @@
 
     <button class="btn-decide" onclick="pickFood()">啟動晚餐輪盤 ⚜️</button>
     
-    <div class="footer">老婆用心特製 APP <span class="kiss-emoji">💋</span></div>
+    <div class="footer">
+        全世界最愛老公了～今晚我們去浪漫一下 <span class="kiss-emoji">💋</span><br>
+        <span class="small-text">(謝謝老公帶我吃大餐 ❤️)</span>
+    </div>
 </div>
 
 <script>
@@ -151,13 +159,13 @@
 
         // --- 燒肉 ---
         '乾杯燒肉', '老乾杯', '胡同燒肉', '燒肉中山', '梵燒肉', 
-
+        '大腕燒肉', '八和和牛燒肉', 'MOE 燃', '樂軒和牛',
 
         // --- 牛排/鐵板燒 ---
-        '教父牛排', 'Smith & Wollensky', '茹絲葵 Ruth\'s Chris', 
+        '教父牛排 Danny\'s', 'Smith & Wollensky', '茹絲葵 Ruth\'s Chris', 
         '莫爾頓牛排館', '初魚鐵板燒', '夏慕尼', '王品牛排', 'A Cut',
 
-        // --- 日料/壽司 (新加入: 劍持屋) ---
+        // --- 日料/壽司 ---
         '劍持屋 (鰻魚飯)',
         '初魚鮨', '瞞著爹', '三井料理美術館', '吉兆割烹壽司', '野村壽司',
 
