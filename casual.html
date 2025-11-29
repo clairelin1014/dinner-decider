@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>晚餐吃什麼？(質感日常)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Varela+Round&display=swap" rel="stylesheet">
+    <style>
+        /* --- 中價位美學：溫暖、乾淨、Cafe風 --- */
+        body {
+            font-family: 'Varela Round', 'Noto Sans TC', sans-serif;
+            /* 溫暖的米色/燕麥色背景 */
+            background-color: #fdfbf7;
+            background-image: radial-gradient(#e0d6cc 1px, transparent 1px);
+            background-size: 20px 20px; /* 點點背景，增加文青感 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #4a4a4a;
+        }
+        .container {
+            /* 乾淨的白色卡片 */
+            background: #ffffff;
+            padding: 2.5rem 2rem;
+            border-radius: 24px;
+            /* 柔和的陰影，不像黑金版那麼重 */
+            box-shadow: 0 10px 40px rgba(198, 180, 160, 0.4);
+            width: 85%;
+            max-width: 380px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+        h1 {
+            color: #d35400; /* 焦糖橘色，促進食慾 */
+            margin: 0 0 10px 0;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 0.9rem;
+            background-color: #f2f2f2;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+        .result-box-container {
+            height: 140px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            /* 像便條紙或菜單的框框 */
+            border: 3px dashed #ebd4b5;
+            border-radius: 16px;
+            background: #fffdf9;
+            overflow: hidden;
+            position: relative;
+        }
+        .result-content {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #5d4037; /* 深咖啡色文字 */
+            width: 100%;
+            position: absolute;
+            transition: all 0.1s;
+        }
+        
+        /* 動畫：殘影效果 (保留好用的功能) */
+        .blur-effect {
+            filter: blur(4px);
+            transform: scale(1.1);
+            opacity: 0.6;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 18px 0;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            width: 100%;
+            /* 溫暖的橘紅漸層，像好吃的義大利麵醬汁或楓葉 */
+            background: linear-gradient(135deg, #ff9f43 0%, #ff6b6b 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+            transition: all 0.2s ease;
+            font-family: 'Varela Round', 'Noto Sans TC', sans-serif;
+        }
+        button:active {
+            transform: scale(0.96);
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.2);
+        }
+        button:disabled {
+            background: #e0e0e0;
+            color: #999;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: #aab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .kiss-emoji {
+            font-size: 1.2rem;
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>老公，今晚吃什麼？</h1>
+    <div class="subtitle">🍴 質感日常 ($400-800)</div>
+    
+    <div class="result-box-container">
+        <div class="result-content" id="resultDisplay">想吃好吃的～</div>
+    </div>
+
+    <button class="btn-decide" onclick="pickFood()">幫我們選一家 (日常版) 🎲</button>
+    
+    <div class="footer">
+        老婆用心特製 APP <span class="kiss-emoji">💋</span>
+    </div>
+</div>
+
+<script>
+    // --- 中價位/質感連鎖/異國料理清單 ---
+    const foods = [
+        // --- 必吃名店/中式 ---
+        '鼎泰豐', '點點心', '添好運', '春水堂', 
+        '欣葉台菜', '開飯川食堂', '時時香',
+
+        // --- 質感日式/豬排 ---
+        '大戶屋', '勝博殿', '邁泉豬排', '銀座杏子豬排',
+        '彌生軒 YAYOI', '藏壽司 (狂吃)', '壽司郎 (狂吃)',
+        '靜岡勝政日式豬排', '博多天麩羅 山海',
+
+        // --- 拉麵/烏龍麵 ---
+        '一蘭拉麵', '屯京拉麵', '一風堂', '鬼金棒', 
+        '丸龜製麵 (加點炸物)', '鳥人拉麵', '麵屋一燈', '五之神製作所',
+
+        // --- 火鍋 (質感中價位) ---
+        '這一小鍋', '石二鍋 (升級版)', '涮乃葉', 
+        '和牛涮', '聚 日式鍋物', '雞湯大叔', 
+        '肉多多火鍋', '萬客什鍋', '詹記麻辣火鍋', '青花驕',
+
+        // --- 異國/泰韓 ---
+        '瓦城泰國料理', '非常泰', 'NARA Thai', 
+        '涓豆腐', '豆腐村', '兩餐', 
+        'SAIKABO 韓國料理', 'bb.q Chicken', '韓姜熙的小廚房',
+
+        // --- 西式/早午餐 ---
+        '貳樓 Second Floor', 'Toasteria Cafe', 'Miacucina', 
+        '金色三麥', 'TGI Fridays', 'GB 鮮釀餐廳', 
+        '樂子 the Diner', 'Campus Cafe', 'Engolili 英格莉莉'
+    ];
+
+    let timer = null;
+
+    function pickFood() {
+        const displayContent = document.getElementById('resultDisplay');
+        const btn = document.querySelector('.btn-decide');
+        
+        if(timer) return;
+
+        let counter = 0;
+        const maxRounds = 30;
+
+        btn.disabled = true;
+        btn.innerText = "精選餐廳中...";
+
+        displayContent.classList.add('blur-effect');
+
+        timer = setInterval(() => {
+            const randomIndex = Math.floor(Math.random() * foods.length);
+            displayContent.innerText = foods[randomIndex];
+            counter++;
+
+            if (counter > maxRounds) {
+                clearInterval(timer);
+                timer = null;
+                
+                displayContent.classList.remove('blur-effect');
+                
+                btn.disabled = false;
+                btn.innerText = "換一家 🔄";
+                
+                const finalIndex = Math.floor(Math.random() * foods.length);
+                displayContent.innerHTML = `今晚就吃...<br>✨ ${foods[finalIndex]} ✨`;
+                
+                // 活潑的彈跳特效
+                displayContent.style.transform = "scale(1.2)";
+                setTimeout(() => displayContent.style.transform = "scale(1)", 250);
+            }
+        }, 40);
+    }
+</script>
+
+</body>
+</html>
