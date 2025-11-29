@@ -8,17 +8,15 @@
         /* --- 黑金奢華風格設定 --- */
         body {
             font-family: 'Helvetica Neue', Arial, 'Microsoft JhengHei', sans-serif;
-            /* 深邃黑金背景 */
             background: radial-gradient(circle at center, #2b2b2b 0%, #000000 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            color: #e0e0e0; /* 淺灰白色文字，對比度高 */
+            color: #e0e0e0;
         }
         .container {
-            /* 深色毛玻璃效果 */
             background: rgba(20, 20, 20, 0.85);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
@@ -28,11 +26,9 @@
             width: 85%;
             max-width: 400px;
             text-align: center;
-            /* 細緻的金色邊框 */
             border: 1px solid rgba(212, 175, 55, 0.3);
         }
         h1 {
-            /* 金色漸層標題 */
             background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -52,7 +48,6 @@
             padding-bottom: 8px;
         }
         .result-box-container {
-            /* 用於包裹內容以實現模糊效果 */
             height: 140px;
             display: flex;
             justify-content: center;
@@ -61,30 +56,25 @@
             border: 2px solid rgba(212, 175, 55, 0.5);
             border-radius: 20px;
             background: rgba(0,0,0,0.3);
-            overflow: hidden; /* 隱藏溢出 */
+            overflow: hidden;
             position: relative;
         }
         .result-content {
             font-size: 2rem;
             font-weight: bold;
-            /* 亮金色文字 */
             color: #f1c40f;
             text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
             transition: all 0.1s ease-out;
             width: 100%;
             position: absolute;
-            /* 初始狀態清晰 */
             filter: blur(0px);
             transform: scale(1);
         }
-        /* --- 關鍵動畫：殘影模糊效果 --- */
         .result-content.blur-effect {
-            /* 高速轉動時增加模糊和稍微放大，製造殘影感 */
             filter: blur(6px);
             transform: scale(1.1);
             opacity: 0.8;
         }
-
         button {
             cursor: pointer;
             border: none;
@@ -93,17 +83,16 @@
             font-weight: bold;
             font-size: 1.2rem;
             width: 100%;
-            /* 奢華金箔漸層按鈕 */
             background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7);
             background-size: 200% auto;
-            color: #222; /* 深色文字對比金色背景 */
+            color: #222;
             box-shadow: 0 10px 25px rgba(191, 149, 63, 0.4);
             transition: all 0.3s ease;
             position: relative;
             top: 0;
         }
         button:hover {
-            background-position: right center; /* hover時金光流動效果 */
+            background-position: right center;
         }
         button:active {
             transform: scale(0.98);
@@ -120,7 +109,7 @@
         .footer {
             margin-top: 35px;
             font-size: 0.9rem;
-            color: #b38728; /* 暗金色 */
+            color: #b38728;
             font-style: italic;
         }
         .kiss-emoji {
@@ -146,18 +135,32 @@
 </div>
 
 <script>
-    // 餐廳清單 (維持不變)
     const foods = [
+        // --- 米其林/頂級私廚 (新加入) ---
+        '態芮 Taïrroir', 'Zea', '樂葵法式鐵板燒', 
+        'Tipsy Sparrow', 'AAA WINE',
+
+        // --- 自助餐 ---
         '旭集 和食集錦', '饗饗 INPARADISE', '晶華柏麗廳', 
         '美福 Palette 彩匯', 'NAGOMI 和食饗宴', '台北君悅凱菲屋',
         '文華東方 Café',
-        '橘色涮涮屋', '合·shabu', '但馬家涮涮鍋', 
+
+        // --- 火鍋 ---
+        '凑凑火鍋', '橘色涮涮屋', '合·shabu', '但馬家涮涮鍋', 
         '二本松涮涮屋', '麻辣45', '青花驕', '這一鍋', '無老鍋',
-        '老乾杯', '胡同燒肉', '燒肉中山', '梵燒肉', 
+
+        // --- 燒肉 ---
+        '乾杯燒肉', '老乾杯', '胡同燒肉', '燒肉中山', '梵燒肉', 
         '大腕燒肉', '八和和牛燒肉', 'MOE 燃', '樂軒和牛',
+
+        // --- 牛排/鐵板燒 ---
         '教父牛排 Danny\'s', 'Smith & Wollensky', '茹絲葵 Ruth\'s Chris', 
         '莫爾頓牛排館', '初魚鐵板燒', '夏慕尼', '王品牛排', 'A Cut',
+
+        // --- 日料/壽司 ---
         '初魚鮨', '瞞著爹', '三井料理美術館', '吉兆割烹壽司', '野村壽司',
+
+        // --- 餐酒館 ---
         'Texas Roadhouse', 'GUMGUM', 'WILDWOOD 原木燒烤', 
         'Beape', 'Longtail', 'Chou Chou', 'ABV Bar & Kitchen'
     ];
@@ -169,17 +172,13 @@
         const btn = document.querySelector('.btn-decide');
         
         if(timer) return;
-
         let counter = 0;
-        const maxRounds = 30; // 轉多圈一點，讓殘影效果更明顯
+        const maxRounds = 30;
 
         btn.disabled = true;
         btn.innerText = "正在為您精選...";
-
-        // --- 開始動畫：加入模糊殘影效果 ---
         displayContent.classList.add('blur-effect');
 
-        // 加快轉動速度 (40ms) 增強速度感
         timer = setInterval(() => {
             const randomIndex = Math.floor(Math.random() * foods.length);
             displayContent.innerText = foods[randomIndex];
@@ -188,17 +187,13 @@
             if (counter > maxRounds) {
                 clearInterval(timer);
                 timer = null;
-                
-                // --- 結束動畫：移除模糊，瞬間變清晰 ---
                 displayContent.classList.remove('blur-effect');
-                
                 btn.disabled = false;
                 btn.innerText = "不滿意？再轉一次 🔄";
                 
                 const finalIndex = Math.floor(Math.random() * foods.length);
                 displayContent.innerHTML = `今晚就吃...<br>✨ ${foods[finalIndex]} ✨`;
                 
-                // 最後的放大強調特效
                 displayContent.style.transform = "scale(1.2)";
                 displayContent.style.textShadow = "0 0 20px rgba(241, 196, 15, 0.8)";
                 setTimeout(() => {
@@ -209,6 +204,5 @@
         }, 40);
     }
 </script>
-
 </body>
 </html>
