@@ -30,16 +30,24 @@
             max-width: 400px;
             text-align: center;
             border: 1px solid rgba(212, 175, 55, 0.3);
-            position: relative; /* 為了截圖定位 */
+            position: relative;
         }
+        /* --- 修改重點：優化標題顯示 --- */
         h1 {
-            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            /* 移除原本不穩定的漸層填色 */
+            /* background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728); */
+            /* -webkit-background-clip: text; */
+            /* -webkit-text-fill-color: transparent; */
+            
+            /* 改用穩定的純金色 + 強烈立體光影，截圖更清晰 */
+            color: #f1c40f; 
+            text-shadow: 
+                2px 2px 4px rgba(0,0,0,0.8), /* 深色陰影增加立體感 */
+                0 0 15px rgba(241, 196, 15, 0.5); /* 金色發光暈 */
             margin: 0 0 15px 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 1px;
+            font-size: 1.9rem; /* 稍微加大一點 */
+            font-weight: 800; /* 加粗 */
+            letter-spacing: 1.5px;
         }
         .subtitle {
             color: #999;
@@ -82,7 +90,6 @@
             opacity: 0.8;
         }
         
-        /* 按鈕群組 */
         .btn-group {
             display: flex;
             flex-direction: column;
@@ -102,7 +109,6 @@
             top: 0;
         }
 
-        /* 主按鈕 (金光閃閃) */
         .btn-decide {
             background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7);
             background-size: 200% auto;
@@ -125,13 +131,12 @@
             box-shadow: none;
         }
 
-        /* 分享按鈕 (黑底金邊風格) */
         .btn-share {
             background: transparent;
             border: 1px solid #b38728;
             color: #b38728;
             box-shadow: none;
-            display: none; /* 預設隱藏 */
+            display: none;
             font-size: 1rem;
             padding: 15px 0;
         }
@@ -150,7 +155,6 @@
             line-height: 1.6;
         }
 
-        /* 截圖時隱藏不需要的元素 */
         .taking-screenshot .btn-group,
         .taking-screenshot .footer {
             display: none !important;
@@ -158,7 +162,7 @@
         .taking-screenshot.container {
             box-shadow: none;
             border: 1px solid rgba(212, 175, 55, 0.3);
-            background: #1a1a1a; /* 截圖時給一個純色深背景，避免透明 */
+            background: #1a1a1a;
             padding-bottom: 3rem;
         }
     </style>
@@ -185,32 +189,19 @@
 
 <script>
     const foods = [
-        // --- 米其林/頂級私廚 ---
         '態芮 Taïrroir', 'Zea', '樂葵法式鐵板燒', 
         'Tipsy Sparrow', 'AAA WINE',
-
-        // --- 自助餐 ---
         '旭集 和食集錦', '饗饗 INPARADISE', '晶華柏麗廳', 
         '美福 Palette 彩匯', 'NAGOMI 和食饗宴', '台北君悅凱菲屋',
         '文華東方 Café',
-
-        // --- 火鍋 ---
         '凑凑火鍋', '橘色涮涮屋', '合·shabu', '但馬家涮涮鍋', 
         '二本松涮涮屋', '麻辣45', '青花驕', '這一鍋', '無老鍋',
-
-        // --- 燒肉 ---
         '乾杯燒肉', '老乾杯', '胡同燒肉', '燒肉中山', '梵燒肉', 
         '大腕燒肉', '八和和牛燒肉', 'MOE 燃', '樂軒和牛',
-
-        // --- 牛排/鐵板燒 ---
         '教父牛排 Danny\'s', 'Smith & Wollensky', '茹絲葵 Ruth\'s Chris', 
         '莫爾頓牛排館', '初魚鐵板燒', '夏慕尼', '王品牛排', 'A Cut',
-
-        // --- 日料/壽司 ---
         '劍持屋 (鰻魚飯)',
         '初魚鮨', '瞞著爹', '三井料理美術館', '吉兆割烹壽司', '野村壽司',
-
-        // --- 餐酒館 ---
         'Texas Roadhouse', 'GUMGUM', 'WILDWOOD 原木燒烤', 
         'Beape', 'Longtail', 'Chou Chou', 'ABV Bar & Kitchen'
     ];
@@ -248,7 +239,6 @@
                 const finalIndex = Math.floor(Math.random() * foods.length);
                 displayContent.innerHTML = `今晚就吃...<br>✨ ${foods[finalIndex]} ✨`;
                 
-                // 顯示分享按鈕
                 shareBtn.style.display = 'block';
 
                 displayContent.style.transform = "scale(1.2)";
@@ -261,15 +251,17 @@
         }, 40);
     }
 
-    // 截圖功能 (特別針對暗色主題優化)
     async function shareScreenshot() {
         const container = document.getElementById('captureArea');
         container.classList.add('taking-screenshot');
 
+        // --- 修改重點：取得乾淨的餐廳名稱 ---
+        const restaurantName = displayContent.innerText.replace('今晚就吃...', '').replace(/✨/g, '').trim();
+
         try {
             const canvas = await html2canvas(container, {
                 scale: 2, 
-                backgroundColor: "#1a1a1a", // 強制設定深色背景，確保截圖不會變透明或白底
+                backgroundColor: "#1a1a1a", 
                 logging: false
             });
 
@@ -279,8 +271,9 @@
                 if (navigator.share && navigator.canShare({ files: [file] })) {
                     await navigator.share({
                         files: [file],
-                        title: 'Premium Dinner Selection',
-                        text: `今晚的豪華選擇：${displayContent.innerText.replace('今晚就吃...', '').replace(/✨/g, '').trim()}，請過目。`
+                        // --- 修改重點：更新分享文字 ---
+                        title: 'Premium Dinner',
+                        text: `今晚就吃 ${restaurantName} ，愛你❤️`
                     });
                 } else {
                     alert('瀏覽器不支援直接分享，請長按儲存圖片！');
