@@ -2,9 +2,10 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>晚餐吃什麼？(銅板美食)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* --- 低價位美學：開胃暖色調、普普風 --- */
         body {
@@ -20,6 +21,8 @@
             min-height: 100vh;
             margin: 0;
             color: #333;
+            -webkit-user-select: none;
+            user-select: none;
         }
         .container {
             background: #fff;
@@ -30,6 +33,7 @@
             width: 85%;
             max-width: 380px;
             text-align: center;
+            position: relative; /* 為了截圖定位 */
         }
         h1 {
             color: #2c3e50;
@@ -71,6 +75,8 @@
             width: 100%;
             position: absolute;
             z-index: 2;
+            padding: 0 10px;
+            word-break: keep-all;
         }
         .result-box-container::before {
             content: '';
@@ -89,6 +95,14 @@
             filter: blur(4px);
             transform: scale(1.1) skew(-5deg);
         }
+        
+        /* 按鈕群組容器 */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         button {
             cursor: pointer;
             border: 4px solid #2c3e50;
@@ -97,24 +111,39 @@
             font-weight: 900;
             font-size: 1.3rem;
             width: 100%;
-            background: #fff;
-            color: #2c3e50;
             box-shadow: 6px 6px 0px #2c3e50;
             transition: all 0.1s;
+            position: relative; /* 為了按壓效果 */
         }
         button:active {
             top: 4px; left: 4px;
             box-shadow: 2px 2px 0px #2c3e50;
-        }
-        button:hover {
-            background-color: #ff6b35;
-            color: #fff;
         }
         button:disabled {
             background: #ddd; color: #888;
             box-shadow: none; cursor: not-allowed;
             top: 6px; left: 6px;
         }
+
+        /* 主按鈕 (白色) */
+        .btn-decide {
+            background: #fff;
+            color: #2c3e50;
+        }
+        .btn-decide:hover {
+            background-color: #ffeaa7; /* 淺黃色 hover */
+        }
+
+        /* 分享按鈕 (設計成亮藍色撞色風格) */
+        .btn-share {
+            background: #54a0ff; /* 亮藍色 */
+            color: #fff;
+            display: none; /* 預設隱藏 */
+        }
+        .btn-share:hover {
+            background-color: #2e86de;
+        }
+
         .footer {
             margin-top: 30px;
             font-size: 0.9rem;
@@ -126,11 +155,23 @@
             transform: rotate(-2deg);
             display: inline-block;
         }
+
+        /* 截圖時的樣式調整 */
+        .taking-screenshot .btn-group,
+        .taking-screenshot .footer {
+            display: none !important;
+        }
+        .taking-screenshot.container {
+            box-shadow: none;
+            /* 保持邊框，因為這也是風格的一部分 */
+            border: 4px solid #2c3e50;
+            padding-bottom: 2.5rem;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="captureArea">
     <h1>老公，今晚吃什麼？</h1>
     <div class="subtitle">💸 月底救星 / 隨便吃吃</div>
     
@@ -138,52 +179,47 @@
         <div class="result-content" id="resultDisplay">餓了嗎？</div>
     </div>
 
-    <button class="btn-decide" onclick="pickFood()">銅板美食轉起來！🎰</button>
+    <div class="btn-group">
+        <button class="btn-decide" onclick="pickFood()">銅板美食轉起來！🎰</button>
+        <button class="btn-share" id="shareButton" onclick="shareScreenshot()">📤 分享截圖</button>
+    </div>
     
     <div class="footer">老婆特製：省錢也是一種愛 ❤️</div>
 </div>
 
 <script>
     const foods = [
-        // --- 新加入 ---
         '林記海南雞飯',
-
-        // --- 國民便當/飯類 ---
         '鬍鬚張魯肉飯', '悟饕池上飯包', '三商巧福', 
         '梁社漢排骨', 'すき家 (Sukiya)', '吉野家', 
          '燒肉飯', '雞肉飯', '巷口自助餐',
-
-        // --- 餃子/麵食 ---
         '八方雲集', '四海遊龍', '溫州大餛飩', 
         '牛肉麵', '巷口乾麵 + 滷味', '炸醬麵', 
         '老饕麵館',
-
-        // --- 速食 ---
         '麥當勞', '肯德基', '摩斯漢堡', 
         '必勝客', '胖老爹', '漢堡王',
-
-        // --- 夜市/小吃 ---
         '夜市牛排', '鹹酥雞 + 啤酒', '滷味', 
         '蚵仔煎', '臭豆腐', '潤餅', 
-
-        // --- 究極省錢/懶人 ---
         '7-11 微波便當', '全家 友善時光', 
         '泡麵 + 加蛋', 'Subway', 
         '爭鮮外帶壽司', '路易莎 (輕食)'
     ];
 
     let timer = null;
+    const shareBtn = document.getElementById('shareButton');
+    const displayContent = document.getElementById('resultDisplay');
+    const decideBtn = document.querySelector('.btn-decide');
 
     function pickFood() {
-        const displayContent = document.getElementById('resultDisplay');
-        const btn = document.querySelector('.btn-decide');
-        
         if(timer) return;
+        
+        shareBtn.style.display = 'none';
+
         let counter = 0;
         const maxRounds = 30;
 
-        btn.disabled = true;
-        btn.innerText = "搜尋便宜好料...";
+        decideBtn.disabled = true;
+        decideBtn.innerText = "搜尋便宜好料...";
         displayContent.classList.add('blur-effect');
 
         timer = setInterval(() => {
@@ -195,16 +231,55 @@
                 clearInterval(timer);
                 timer = null;
                 displayContent.classList.remove('blur-effect');
-                btn.disabled = false;
-                btn.innerText = "不喜歡？再轉！";
+                btnReset();
                 
                 const finalIndex = Math.floor(Math.random() * foods.length);
                 displayContent.innerHTML = `${foods[finalIndex]}`;
                 
+                // 動畫效果
                 displayContent.style.transform = "scale(1.3) rotate(5deg)";
                 setTimeout(() => displayContent.style.transform = "scale(1) rotate(0deg)", 200);
             }
         }, 30);
+    }
+
+    function btnReset() {
+        decideBtn.disabled = false;
+        decideBtn.innerText = "不喜歡？再轉！";
+        shareBtn.style.display = 'block'; // 顯示分享按鈕
+    }
+
+    // 截圖功能
+    async function shareScreenshot() {
+        const container = document.getElementById('captureArea');
+        container.classList.add('taking-screenshot');
+
+        try {
+            const canvas = await html2canvas(container, {
+                scale: 2, 
+                backgroundColor: "#ffffff", 
+                logging: false
+            });
+
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], 'dinner-result.png', { type: 'image/png' });
+
+                if (navigator.share && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: '今晚吃便宜的！',
+                        text: `省錢大作戰，今晚吃：${displayContent.innerText}！`
+                    });
+                } else {
+                    alert('瀏覽器不支援直接分享，請長按儲存！');
+                }
+            }, 'image/png');
+
+        } catch (error) {
+            console.error('截圖失敗:', error);
+        } finally {
+            container.classList.remove('taking-screenshot');
+        }
     }
 </script>
 </body>
