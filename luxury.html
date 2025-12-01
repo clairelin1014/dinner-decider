@@ -2,8 +2,9 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>老公的豪華晚餐</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* --- 黑金奢華風格設定 --- */
         body {
@@ -15,6 +16,8 @@
             min-height: 100vh;
             margin: 0;
             color: #e0e0e0;
+            -webkit-user-select: none;
+            user-select: none;
         }
         .container {
             background: rgba(20, 20, 20, 0.85);
@@ -27,6 +30,7 @@
             max-width: 400px;
             text-align: center;
             border: 1px solid rgba(212, 175, 55, 0.3);
+            position: relative; /* 為了截圖定位 */
         }
         h1 {
             background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
@@ -69,12 +73,22 @@
             position: absolute;
             filter: blur(0px);
             transform: scale(1);
+            padding: 0 10px;
+            word-break: keep-all;
         }
         .result-content.blur-effect {
             filter: blur(6px);
             transform: scale(1.1);
             opacity: 0.8;
         }
+        
+        /* 按鈕群組 */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
         button {
             cursor: pointer;
             border: none;
@@ -83,50 +97,75 @@
             font-weight: bold;
             font-size: 1.2rem;
             width: 100%;
-            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7);
-            background-size: 200% auto;
-            color: #222;
-            box-shadow: 0 10px 25px rgba(191, 149, 63, 0.4);
             transition: all 0.3s ease;
             position: relative;
             top: 0;
         }
-        button:hover {
+
+        /* 主按鈕 (金光閃閃) */
+        .btn-decide {
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7);
+            background-size: 200% auto;
+            color: #222;
+            box-shadow: 0 10px 25px rgba(191, 149, 63, 0.4);
+        }
+        .btn-decide:hover {
             background-position: right center;
         }
-        button:active {
+        .btn-decide:active {
             transform: scale(0.98);
             box-shadow: 0 5px 15px rgba(191, 149, 63, 0.3);
             top: 2px;
         }
-        button:disabled {
+        .btn-decide:disabled {
             opacity: 0.7;
             cursor: not-allowed;
             background: #555;
             color: #888;
             box-shadow: none;
         }
+
+        /* 分享按鈕 (黑底金邊風格) */
+        .btn-share {
+            background: transparent;
+            border: 1px solid #b38728;
+            color: #b38728;
+            box-shadow: none;
+            display: none; /* 預設隱藏 */
+            font-size: 1rem;
+            padding: 15px 0;
+        }
+        .btn-share:hover {
+            background: rgba(179, 135, 40, 0.1);
+            box-shadow: 0 0 20px rgba(179, 135, 40, 0.2);
+        }
+        .btn-share:active {
+            transform: scale(0.98);
+        }
+
         .footer {
             margin-top: 35px;
-            font-size: 0.95rem; /* 字稍微大一點 */
+            font-size: 0.95rem;
             color: #b38728;
-            line-height: 1.6; /* 增加行距，讓兩行字不擁擠 */
+            line-height: 1.6;
         }
-        .kiss-emoji {
-            font-style: normal;
-            margin-left: 5px;
-            font-size: 1.3rem;
+
+        /* 截圖時隱藏不需要的元素 */
+        .taking-screenshot .btn-group,
+        .taking-screenshot .footer {
+            display: none !important;
         }
-        .small-text {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            font-style: italic;
+        .taking-screenshot.container {
+            box-shadow: none;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: #1a1a1a; /* 截圖時給一個純色深背景，避免透明 */
+            padding-bottom: 3rem;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="captureArea">
     <h1>老公，今晚吃什麼？</h1>
     <div class="subtitle">Premium Selection</div>
     
@@ -134,11 +173,13 @@
         <div class="result-content" id="resultDisplay">準備好了嗎？</div>
     </div>
 
-    <button class="btn-decide" onclick="pickFood()">啟動晚餐輪盤 ⚜️</button>
+    <div class="btn-group">
+        <button class="btn-decide" onclick="pickFood()">啟動晚餐輪盤 ⚜️</button>
+        <button class="btn-share" id="shareButton" onclick="shareScreenshot()">📤 分享截圖</button>
+    </div>
     
     <div class="footer">
         謝謝老公請我吃大餐❤️ 
-  
     </div>
 </div>
 
@@ -175,17 +216,20 @@
     ];
 
     let timer = null;
+    const shareBtn = document.getElementById('shareButton');
+    const displayContent = document.getElementById('resultDisplay');
+    const decideBtn = document.querySelector('.btn-decide');
 
     function pickFood() {
-        const displayContent = document.getElementById('resultDisplay');
-        const btn = document.querySelector('.btn-decide');
-        
         if(timer) return;
+        
+        shareBtn.style.display = 'none';
+
         let counter = 0;
         const maxRounds = 30;
 
-        btn.disabled = true;
-        btn.innerText = "正在為您精選...";
+        decideBtn.disabled = true;
+        decideBtn.innerText = "正在為您精選...";
         displayContent.classList.add('blur-effect');
 
         timer = setInterval(() => {
@@ -197,12 +241,16 @@
                 clearInterval(timer);
                 timer = null;
                 displayContent.classList.remove('blur-effect');
-                btn.disabled = false;
-                btn.innerText = "不滿意？再轉一次 🔄";
+                
+                decideBtn.disabled = false;
+                decideBtn.innerText = "不滿意？再轉一次 🔄";
                 
                 const finalIndex = Math.floor(Math.random() * foods.length);
                 displayContent.innerHTML = `今晚就吃...<br>✨ ${foods[finalIndex]} ✨`;
                 
+                // 顯示分享按鈕
+                shareBtn.style.display = 'block';
+
                 displayContent.style.transform = "scale(1.2)";
                 displayContent.style.textShadow = "0 0 20px rgba(241, 196, 15, 0.8)";
                 setTimeout(() => {
@@ -211,6 +259,39 @@
                 }, 300);
             }
         }, 40);
+    }
+
+    // 截圖功能 (特別針對暗色主題優化)
+    async function shareScreenshot() {
+        const container = document.getElementById('captureArea');
+        container.classList.add('taking-screenshot');
+
+        try {
+            const canvas = await html2canvas(container, {
+                scale: 2, 
+                backgroundColor: "#1a1a1a", // 強制設定深色背景，確保截圖不會變透明或白底
+                logging: false
+            });
+
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], 'luxury-dinner.png', { type: 'image/png' });
+
+                if (navigator.share && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Premium Dinner Selection',
+                        text: `今晚的豪華選擇：${displayContent.innerText.replace('今晚就吃...', '').replace(/✨/g, '').trim()}，請過目。`
+                    });
+                } else {
+                    alert('瀏覽器不支援直接分享，請長按儲存圖片！');
+                }
+            }, 'image/png');
+
+        } catch (error) {
+            console.error('截圖失敗:', error);
+        } finally {
+            container.classList.remove('taking-screenshot');
+        }
     }
 </script>
 </body>
